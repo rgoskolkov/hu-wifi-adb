@@ -30,9 +30,26 @@ jobs:
         env:
           RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
         run: |
-          test -n "$RELEASE_KEYSTORE_BASE64"
           mkdir -p "$RUNNER_TEMP/hu-wifi-adb-signing"
-          printf '%s' "$RELEASE_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/hu-wifi-adb-signing/release.jks"
+          python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+
+          value = os.environ.get("RELEASE_KEYSTORE_BASE64", "")
+          if not value.strip():
+              raise SystemExit("RELEASE_KEYSTORE_BASE64 is empty")
+          compact = "".join(value.split())
+          try:
+              data = base64.b64decode(compact, validate=True)
+          except Exception as exc:
+              raise SystemExit(f"RELEASE_KEYSTORE_BASE64 is not valid Base64: {exc}")
+          if not data:
+              raise SystemExit("decoded release keystore is empty")
+          path = Path(os.environ["RUNNER_TEMP"]) / "hu-wifi-adb-signing" / "release.jks"
+          path.write_bytes(data)
+          print(f"restored release keystore: {len(data)} bytes")
+          PY
 
       - name: Build signed APK
         env:
