@@ -9,12 +9,35 @@ if [ -z "$SDK" ]; then
 fi
 BT="${ANDROID_BUILD_TOOLS:-$SDK/build-tools/36.0.0}"
 JAR="${ANDROID_PLATFORM_JAR:-$SDK/platforms/android-37.0/android.jar}"
-SIGNING_KEY="${HU_ADB_SIGNING_KEY:-}"
+SIGNING_KEY="${HU_ADB_SIGNING_KEY:-local/dev-signing.jks}"
+SIGNING_PASSWORD="${HU_ADB_SIGNING_KEY_PASSWORD:-android}"
+SIGNING_KEY_PASSWORD="${HU_ADB_SIGNING_KEY_KEY_PASSWORD:-$SIGNING_PASSWORD}"
+SIGNING_ALIAS="${HU_ADB_SIGNING_KEY_ALIAS:-}"
 
-if [ -z "$SIGNING_KEY" ] || [ ! -f "$SIGNING_KEY" ]; then
-  echo "Set HU_ADB_SIGNING_KEY to a private JKS signing key." >&2
-  echo "The signing key is intentionally not stored in this repository." >&2
-  exit 2
+if [ -n "${HU_ADB_SIGNING_KEY:-}" ]; then
+  if [ ! -f "$SIGNING_KEY" ]; then
+    echo "Signing key not found: $SIGNING_KEY" >&2
+    exit 2
+  fi
+  echo "Using external signing key: $SIGNING_KEY"
+else
+  SIGNING_ALIAS="hu-wifi-adb-dev"
+  if [ ! -f "$SIGNING_KEY" ]; then
+    KEYTOOL="${KEYTOOL:-${JAVA_HOME:+$JAVA_HOME/bin/keytool}}"
+    if [ -z "$KEYTOOL" ]; then
+      KEYTOOL="$(command -v keytool || true)"
+    fi
+    if [ -z "$KEYTOOL" ] || [ ! -x "$KEYTOOL" ]; then
+      echo "keytool is required to create the local development signing key." >&2
+      exit 2
+    fi
+    mkdir -p "$(dirname "$SIGNING_KEY")"
+    "$KEYTOOL" -genkeypair -keystore "$SIGNING_KEY" -storepass "$SIGNING_PASSWORD" -keypass "$SIGNING_KEY_PASSWORD" -alias "$SIGNING_ALIAS" -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Toyota bZ3X HU Wi-Fi ADB Local Development,O=Local Development"
+    echo "Created local development signing key: $SIGNING_KEY"
+    echo "Keep this file if you want future local builds to update the same installed app."
+  else
+    echo "Using local development signing key: $SIGNING_KEY"
+  fi
 fi
 
 rm -rf out/classes out/dex
@@ -27,5 +50,9 @@ jar cf out/app-classes.jar -C out/classes .
 cp out/resources.apk out/unsigned.apk
 (cd out/dex && zip -q ../unsigned.apk classes*.dex)
 "$BT/zipalign" -f 4 out/unsigned.apk out/aligned.apk
-"$BT/apksigner" sign --ks "$SIGNING_KEY" --ks-pass pass:android --out out/hu-wifi-adb-v1.apk out/aligned.apk
+SIGN_ARGS=(--ks "$SIGNING_KEY" --ks-pass "pass:$SIGNING_PASSWORD" --key-pass "pass:$SIGNING_KEY_PASSWORD")
+if [ -n "$SIGNING_ALIAS" ]; then
+  SIGN_ARGS+=(--ks-key-alias "$SIGNING_ALIAS")
+fi
+"$BT/apksigner" sign "${SIGN_ARGS[@]}" --out out/hu-wifi-adb-v1.apk out/aligned.apk
 "$BT/apksigner" verify --verbose out/hu-wifi-adb-v1.apk

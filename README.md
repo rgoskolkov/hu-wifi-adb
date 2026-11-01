@@ -26,17 +26,34 @@ user-controlled Android setting.
 
 ## Build
 
-Set the SDK and a private signing key:
+For a normal local build, set the Android SDK and run:
 
 ```sh
 export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
-export HU_ADB_SIGNING_KEY="/path/to/private-signing.jks"
 ./build.sh
 ```
 
-The build expects the signing key password and alias used by the original project
-(`android` / `local`) unless you adjust `build.sh`. Private keys are intentionally ignored
-by Git and must never be committed.
+If no signing key is configured, the first build automatically creates
+`local/dev-signing.jks` and signs the APK with it. The `local/` directory is ignored by
+Git. Keep that file: future APKs signed with the same key can update your previous local
+installation. If you delete the key and generate another one, Android will not accept the
+new APK as an update of the old installation.
+
+The automatically generated key is intentionally a local development key with a fixed
+development password. Do not use it to publish official releases.
+
+For an official/release build, provide a persistent private key instead:
+
+```sh
+export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+export HU_ADB_SIGNING_KEY="/secure/path/release-signing.jks"
+export HU_ADB_SIGNING_KEY_PASSWORD="..."
+export HU_ADB_SIGNING_KEY_KEY_PASSWORD="..."   # optional; defaults to keystore password
+export HU_ADB_SIGNING_KEY_ALIAS="..."          # optional for a single-key keystore
+./build.sh
+```
+
+Release signing keys are intentionally not stored in this repository.
 
 Output: `out/hu-wifi-adb-v1.apk`.
 
@@ -85,7 +102,13 @@ adb -s IP:PORT shell id
 
 The package is `org.gc.bz3x.huadb`, version `1.0.0` / code `100`.
 Because this package name differs from the earlier research build, Android treats it as
-a separate application. Its signing key is private and is not part of this repository.
+a separate application.
+
+Official APKs and self-built APKs can use the same package name, but Android only permits
+an update when both APKs are signed by the same key. Therefore a self-built APK signed
+with `local/dev-signing.jks` cannot update an official release signed with the project
+release key, and vice versa; switching signing identities requires uninstalling the
+existing app first.
 
 ## Status
 
