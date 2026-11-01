@@ -57,6 +57,21 @@ Release signing keys are intentionally not stored in this repository.
 
 Output: `out/hu-wifi-adb-v1.apk`.
 
+## Official releases
+
+GitHub Releases are built automatically from tags matching `v*` (for example `v1.0.0`).
+The release workflow runs the host tests, builds the APK with the project's persistent
+release key, verifies its signature, and publishes both the APK and a SHA256 file.
+
+The release workflow uses these GitHub Actions secrets:
+
+- `RELEASE_KEYSTORE_BASE64` — the release JKS file encoded as one Base64 string;
+- `RELEASE_KEYSTORE_PASSWORD` — keystore password;
+- `RELEASE_KEY_PASSWORD` — optional key password; when omitted, the keystore password is used;
+- `RELEASE_KEY_ALIAS` — optional for a keystore containing a single signing key.
+
+Never commit the release JKS or any of these secret values.
+
 ## Install
 
 Read [tools/device/INSTALL.md](tools/device/INSTALL.md) and
