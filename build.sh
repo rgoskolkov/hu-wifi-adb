@@ -7,8 +7,30 @@ if [ -z "$SDK" ]; then
   echo "Set ANDROID_SDK_ROOT (or ANDROID_HOME) to your Android SDK." >&2
   exit 2
 fi
-BT="${ANDROID_BUILD_TOOLS:-$SDK/build-tools/36.0.0}"
-JAR="${ANDROID_PLATFORM_JAR:-$SDK/platforms/android-37.0/android.jar}"
+if [ -n "${ANDROID_BUILD_TOOLS:-}" ]; then
+  BT="$ANDROID_BUILD_TOOLS"
+else
+  BT="$(find "$SDK/build-tools" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -V | tail -n 1)"
+fi
+
+if [ -n "${ANDROID_PLATFORM_JAR:-}" ]; then
+  JAR="$ANDROID_PLATFORM_JAR"
+else
+  JAR="$(find "$SDK/platforms" -mindepth 2 -maxdepth 2 -name android.jar -type f 2>/dev/null | sort -V | tail -n 1)"
+fi
+
+if [ -z "$BT" ] || [ ! -x "$BT/aapt" ] || [ ! -x "$BT/d8" ] || [ ! -x "$BT/zipalign" ] || [ ! -x "$BT/apksigner" ]; then
+  echo "Android build-tools with aapt, d8, zipalign and apksigner were not found under $SDK." >&2
+  exit 2
+fi
+
+if [ -z "$JAR" ] || [ ! -f "$JAR" ]; then
+  echo "No Android platform android.jar was found under $SDK/platforms." >&2
+  exit 2
+fi
+
+echo "Using Android build-tools: $BT"
+echo "Using Android platform: $JAR"
 SIGNING_KEY="${HU_ADB_SIGNING_KEY:-local/dev-signing.jks}"
 SIGNING_PASSWORD="${HU_ADB_SIGNING_KEY_PASSWORD:-android}"
 SIGNING_KEY_PASSWORD="${HU_ADB_SIGNING_KEY_KEY_PASSWORD:-$SIGNING_PASSWORD}"
