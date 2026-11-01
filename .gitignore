@@ -1,0 +1,13 @@
+out/
+artifacts/
+*.apk
+*.aab
+*.jks
+*.keystore
+*.idsig
+local.properties
+__pycache__/
+*.pyc
+.DS_Store
+.idea/
+.vscode/
