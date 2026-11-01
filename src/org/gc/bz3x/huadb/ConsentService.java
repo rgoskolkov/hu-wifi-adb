@@ -1,4 +1,4 @@
-package ru.local.huadb;
+package org.gc.bz3x.huadb;
 
 import android.accessibilityservice.AccessibilityService;
 import android.os.Handler;

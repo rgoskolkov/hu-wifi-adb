@@ -1,4 +1,4 @@
-package ru.local.huadb;
+package org.gc.bz3x.huadb;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,7 +40,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class MainActivity extends Activity {
-    private static final String CONSENT_COMPONENT = "ru.local.huadb/.ConsentService";
+    private static final String CONSENT_COMPONENT = "org.gc.bz3x.huadb/.ConsentService";
     private final Handler handler = new Handler();
     private final ArrayDeque<NsdServiceInfo> pending = new ArrayDeque<>();
     private TextView badge, address, command, note, helper;
@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
         scroll.setFillViewport(true);
         scroll.addView(root);
         setContentView(scroll);
-        root.addView(text("Wi-Fi ADB · ГУ",30,white));
+        root.addView(text("Toyota bZ3X · Wi-Fi ADB",30,white));
         badge = text("",19,amber);
         badge.setGravity(Gravity.CENTER);
         badge.setPadding(20,14,20,14);

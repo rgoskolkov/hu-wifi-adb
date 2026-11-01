@@ -4,7 +4,7 @@ import argparse
 import subprocess
 from pathlib import Path
 
-PACKAGE = "ru.local.huadb"
+PACKAGE = "org.gc.bz3x.huadb"
 
 def main():
     here = Path(__file__).resolve().parent

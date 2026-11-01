@@ -1,6 +1,6 @@
-# HU Wi-Fi ADB
+# Toyota bZ3X HU Wi-Fi ADB
 
-Minimal Android app for manually enabling Wi-Fi ADB on the tested Android 11 head unit.
+Minimal Android app for manually enabling Wi-Fi ADB on the Toyota bZ3X Android 11 head unit.
 
 The repository intentionally contains only the working Wi-Fi path:
 
@@ -10,9 +10,6 @@ The repository intentionally contains only the working Wi-Fi path:
 - discovers `_adb-tls-connect._tcp.` through Android NSD/mDNS;
 - shows and copies `adb connect IP:PORT`;
 - can restart only its own Accessibility service while preserving other enabled services.
-
-It does **not** contain pairing experiments, local ADB clients, USB/OEM Binder experiments,
-CAN/UDS code, firmware modifications, or research dumps.
 
 ## Requirements
 
@@ -72,8 +69,8 @@ The wrapper uses the source-built PackageInstaller.Session helper in
 
 ## Use
 
-1. Enable the app's Accessibility service `ru.local.huadb/.ConsentService`.
-2. Open **Wi-Fi ADB · ГУ**.
+1. Enable the app's Accessibility service `org.gc.bz3x.huadb/.ConsentService`.
+2. Open **Toyota bZ3X · Wi-Fi ADB**.
 3. Press **Включить Wi-Fi ADB** and confirm.
 4. Wait until the app shows `adb connect IP:PORT`.
 5. On another machine in the same Wi-Fi network, run that command and verify:
@@ -86,9 +83,9 @@ adb -s IP:PORT shell id
 
 ## Package identity and updates
 
-The package remains `ru.local.huadb`, version `1.0.0` / code `100`.
-Updating an existing installation without wiping its data requires the same signing key
-that signed the installed APK. That private key is not part of this repository.
+The package is `org.gc.bz3x.huadb`, version `1.0.0` / code `100`.
+Because this package name differs from the earlier research build, Android treats it as
+a separate application. Its signing key is private and is not part of this repository.
 
 ## Status
 

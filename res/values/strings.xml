@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">Wi-Fi ADB · ГУ</string>
+  <string name="app_name">Toyota bZ3X · Wi-Fi ADB</string>
   <string name="consent_service_label">Подтверждение Wi-Fi ADB</string>
   <string name="consent_description">Подтверждает только системный запрос Wi-Fi ADB после ручного разрешения в приложении. Ожидание ограничено 20 секундами.</string>
 </resources>

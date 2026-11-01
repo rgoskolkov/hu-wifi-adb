@@ -6,11 +6,11 @@ installed non-system package through a source-built Android helper.
 For this app the relevant command is:
 
 ```sh
-./tools/device/app-permissions inspect ru.local.huadb --serial DEVICE_SERIAL --json
-./tools/device/app-permissions grant ru.local.huadb \
+./tools/device/app-permissions inspect org.gc.bz3x.huadb --serial DEVICE_SERIAL --json
+./tools/device/app-permissions grant org.gc.bz3x.huadb \
   android.permission.WRITE_SECURE_SETTINGS \
   --serial DEVICE_SERIAL --json
-./tools/device/app-permissions inspect ru.local.huadb --serial DEVICE_SERIAL --json
+./tools/device/app-permissions inspect org.gc.bz3x.huadb --serial DEVICE_SERIAL --json
 ```
 
 The grant operation validates that the permission is declared and verifies the
