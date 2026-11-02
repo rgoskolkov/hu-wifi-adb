@@ -56,7 +56,10 @@ public class ConsentService extends AccessibilityService {
         report(value);
     }
 
-    @Override protected void onServiceConnected() { live = this; stop("готов; действие только после ручного разрешения"); }
+    @Override protected void onServiceConnected() {
+        live=this;
+        stop("готов; действие только после ручного разрешения");
+    }
     @Override public void onInterrupt() { stop("прервано"); }
     @Override public boolean onUnbind(android.content.Intent intent) { stop("служба отключена"); if (live == this) live = null; return super.onUnbind(intent); }
     @Override public void onDestroy() { stop("отключён"); if (live == this) live = null; super.onDestroy(); }
