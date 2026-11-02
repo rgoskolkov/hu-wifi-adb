@@ -5,6 +5,11 @@ installed non-system package through a source-built Android helper.
 
 For this app the relevant command is:
 
+`DEVICE_SERIAL` is the exact device identifier from the first column of
+`adb devices`. For example, if `adb devices` shows
+`192.168.1.123:5555    device`, use `--serial 192.168.1.123:5555`. For a USB
+device it may be a value such as `ABC123456`.
+
 ```sh
 ./tools/device/app-permissions inspect org.gc.bz3x.huadb --serial DEVICE_SERIAL --json
 ./tools/device/app-permissions grant org.gc.bz3x.huadb \

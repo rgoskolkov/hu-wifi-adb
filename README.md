@@ -77,6 +77,22 @@ Never commit the release JKS or any of these secret values.
 Read [tools/device/INSTALL.md](tools/device/INSTALL.md) and
 [tools/device/PERMISSIONS.md](tools/device/PERMISSIONS.md) first.
 
+`DEVICE_SERIAL` in the commands below is the device identifier shown in the first
+column of `adb devices`:
+
+```sh
+adb devices
+```
+
+For example, if the output contains:
+
+```text
+192.168.1.123:5555    device
+```
+
+use `--serial 192.168.1.123:5555`. For a USB-connected device the serial may look
+like `ABC123456`, in which case use `--serial ABC123456`.
+
 Dry-run (local APK validation only):
 
 ```sh
